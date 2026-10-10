@@ -21,7 +21,7 @@ const s1l1: Lesson = {
       'Setup before the key',
       'Before moving, check that the seat, wheel, and all three mirrors are set, seatbelts are on, and the teen can reach the pedals comfortably. Let the teen do it without prompting.',
     ),
-    say('Keep it low-pressure', '"There is no traffic here. Take your time. We will do this a few times."'),
+    say('Keep it low-pressure', "\"There's no traffic here. Take your time. We'll do this a few times.\""),
     watch(
       'Smooth is the goal',
       'Look for gentle pedal pressure. Try a challenge: stop at a marked spot using only light brake pressure that starts early.',
@@ -57,7 +57,7 @@ const s1l2: Lesson = {
       'Eyes move',
       'Watch the teen\'s head and eyes. Do they check mirrors every few seconds? Narrate what you see: "I noticed you checked your left mirror before turning. Nice."',
     ),
-    say('Backing slowly', '"Walk speed. Look over your right shoulder. Stop any time you are unsure."'),
+    say('Backing slowly', "\"Walk speed. Look over your right shoulder. Stop any time you're unsure.\""),
     mistake(
       'Turning too early',
       'Turning before the corner makes the car cut across lanes. Practice with cones or painted lines: wait until the front wheels reach the corner point, then turn.',
@@ -93,7 +93,7 @@ const s2l1: Lesson = {
       'Pick the route first',
       'Choose a loop of low-traffic streets you know. Right turns first; save left turns for the end of the drive.',
     ),
-    say('Speed check', '"Let us hold a steady speed. A little lighter on the gas here."'),
+    say('Speed check', "\"Let's hold a steady speed. A little lighter on the gas here.\""),
     watch(
       'Hidden hazards',
       'Look for driveways, parked cars, mailboxes, kids, and pets. Ask the teen to name what could appear from behind each one.',
@@ -200,7 +200,7 @@ const s3l2: Lesson = {
       'Wheels straight while waiting',
       'When waiting to turn left, the wheels should point straight. If someone bumps from behind, the car will not be pushed into oncoming traffic.',
     ),
-    say('Patience on gaps', '"You do not have to take this one. Wait for a gap that feels easy."'),
+    say('Patience on gaps', "\"You don't have to take this one. Wait for a gap that feels easy.\""),
     mistake(
       'Rushing the gap',
       'Pressure from cars behind leads to bad gap choices. It is fine to wait. Reassure: "Let them wait."',
@@ -272,7 +272,7 @@ const s4l2: Lesson = {
       'Read the signs early',
       'Look at the lane arrows on the approach and decide on a lane before reaching the splitter island.',
     ),
-    say('Stay in your lane', '"Stay in the lane you picked all the way around. Do not switch inside."'),
+    say('Stay in your lane', "\"Stay in the lane you picked all the way around. Don't switch inside.\""),
     mistake(
       'Drifting toward the car beside you',
       'In a two-lane circle, cars may run side by side. Keep the car centered in the lane and watch the car next to you at the exit.',
@@ -308,7 +308,7 @@ const s5l1: Lesson = {
       'Driveways everywhere',
       'Ask the teen to name driveways and side streets as you pass. Cars may pull out; cover the brake when approaching busy entrances.',
     ),
-    say('Early lane choice', '"Let us get into the turn lane early so we are not rushing."'),
+    say('Early lane choice', "\"Let's get into the turn lane early so we're not rushing.\""),
     mistake(
       'Late lane changes',
       'Changing lanes close to an intersection is a common error. Plan one block ahead: mirror, signal, check, go.',
@@ -416,7 +416,7 @@ const s6l2: Lesson = {
       'Trucks',
       'Large trucks have big blind spots and need more room to stop. Pass them without lingering beside them.',
     ),
-    say('Keep right', '"Stay in the right lane unless we are passing. Plenty of space ahead?"'),
+    say('Keep right', "\"Stay in the right lane unless we're passing. Plenty of space ahead?\""),
     mistake(
       'Following too closely',
       'At highway speeds, 3 seconds may not be enough. Add more in rain or with a large vehicle ahead.',
@@ -490,7 +490,7 @@ const s7l2: Lesson = {
       'Judging gaps at night',
       'Headlights are harder to judge for distance and speed. Encourage waiting for a larger gap on left turns.',
     ),
-    say('Permission to stop', '"If you are tired or it feels like too much, tell me. We can head home."'),
+    say('Permission to stop', "\"If you're tired or it feels like too much, tell me. We can head home.\""),
     mistake(
       'Looking at taillights only',
       'Staring at the car ahead leads to missing hazards on the sides. Keep scanning.',
