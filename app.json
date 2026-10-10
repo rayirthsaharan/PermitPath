@@ -1,0 +1,36 @@
+{
+  "expo": {
+    "name": "PermitPath WilCo",
+    "slug": "permitpath-wilco",
+    "scheme": "permitpath",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "automatic",
+    "plugins": ["expo-router"],
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "org.permitpath.wilco",
+      "infoPlist": {
+        "NSLocationWhenInUseUsageDescription": "PermitPath WilCo uses your location during a practice drive to record the route, distance, and whether the drive happened at night. Location stays on this phone.",
+        "NSMotionUsageDescription": "PermitPath WilCo uses motion sensors during a practice drive to flag firm braking moments for the post-drive chat. Data stays on this phone."
+      }
+    },
+    "android": {
+      "package": "org.permitpath.wilco",
+      "adaptiveIcon": {
+        "backgroundColor": "#E6F4FE",
+        "foregroundImage": "./assets/android-icon-foreground.png",
+        "backgroundImage": "./assets/android-icon-background.png",
+        "monochromeImage": "./assets/android-icon-monochrome.png"
+      },
+      "predictiveBackGestureEnabled": false,
+      "permissions": ["ACCESS_FINE_LOCATION", "ACCESS_COARSE_LOCATION"]
+    },
+    "web": {
+      "bundler": "metro",
+      "output": "single",
+      "favicon": "./assets/favicon.png"
+    }
+  }
+}
