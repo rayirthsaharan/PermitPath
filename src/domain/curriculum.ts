@@ -2,13 +2,13 @@ import { SKILL_LEVEL_LABELS } from './progress';
 import type { Drive, Lesson, Skill, SkillCategory, SkillRating, Stage } from './types';
 
 export type CurriculumContext = {
-  /** All stages (needed to resolve `requiresLessonsFromStages`). */
+  /** All stages (needed for `requiresLessonsFromStages`). */
   stages: ReadonlyArray<Stage>;
   /** Total logged hours so far. */
   totalHours: number;
   /** Parent ratings by skill. Missing skills count as level 0. */
   ratings: ReadonlyArray<Pick<SkillRating, 'skillId' | 'level'>>;
-  /** Skill definitions (used to resolve category requirements). */
+  /** Skill definitions (used for category requirements). */
   skills: ReadonlyArray<Pick<Skill, 'id' | 'category' | 'title'>>;
   categories?: ReadonlyArray<SkillCategory>;
   /** Lesson ids with at least one saved drive. */
@@ -21,10 +21,7 @@ export type StageStatus = {
   unlocked: boolean;
   /** True when unlocked only because of a manual override. */
   overridden: boolean;
-  /**
-   * Human-readable unmet gates. Empty when naturally unlocked. When `overridden`,
-   * lists the gates that were bypassed.
-   */
+  /** Plain-language unmet gates. Empty when naturally unlocked. If overridden, the gates skipped. */
   reasons: string[];
 };
 

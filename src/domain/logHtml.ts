@@ -13,7 +13,7 @@ export type LogHtmlInput = {
   generatedAt: number;
 };
 
-/** Escape text for safe inclusion in HTML (element content and attribute values). */
+/** Make text safe to put in HTML. */
 export function escapeHtml(input: unknown): string {
   return String(input ?? '')
     .replace(/&/g, '&amp;')

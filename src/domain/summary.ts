@@ -36,8 +36,8 @@ export type SummaryInput = {
 const round1 = (n: number) => Math.round(n * 10) / 10;
 
 /**
- * Anonymous, opt-in export. Contains NO names, NO locations, and NO timestamps
- * finer than month. Only aggregates, lesson/stage ids, and survey answers.
+ * Anonymous, opt-in export. NO names, NO locations, no times finer than month.
+ * Only totals, lesson/stage ids, and survey answers.
  */
 export function buildAnonymousSummary(input: SummaryInput): AnonymousSummary {
   const { drives, stages, surveys, now } = input;

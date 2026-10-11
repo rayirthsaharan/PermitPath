@@ -1,6 +1,6 @@
 import { Alert, Platform } from 'react-native';
 
-/** Alert.alert is a no-op on react-native-web, so fall back to window dialogs there. */
+/** Alert.alert does nothing on web, so use window dialogs there. */
 export function notify(title: string, message?: string): void {
   if (Platform.OS === 'web') {
     if (typeof window !== 'undefined') window.alert(message ? `${title}\n\n${message}` : title);

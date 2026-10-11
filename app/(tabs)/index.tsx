@@ -42,7 +42,7 @@ export default function Home() {
   const rec = useDriveRecorder();
   const [recovered, setRecovered] = useState<ActiveDriveSnapshot | null>(null);
 
-  // Look for an unfinished drive each time Home gains focus (and nothing is recording).
+  // Check for an unfinished drive whenever Home is shown (and nothing is recording).
   useFocusEffect(
     useCallback(() => {
       let alive = true;

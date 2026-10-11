@@ -34,7 +34,7 @@ export type StoreState = {
   addSupervisor: (s: Omit<Supervisor, 'id'>) => Promise<Supervisor>;
   updateSupervisor: (id: string, patch: Partial<Omit<Supervisor, 'id'>>) => Promise<void>;
   removeSupervisor: (id: string) => Promise<void>;
-  /** Simplifies and stores the track, persists the drive, bumps skill practice counts. */
+  /** Shortens and stores the track, saves the drive, updates skill practice counts. */
   addDrive: (drive: Drive, track?: TrackPoint[]) => Promise<void>;
   updateDrive: (id: string, patch: Partial<Omit<Drive, 'id'>>) => Promise<void>;
   deleteDrive: (id: string) => Promise<void>;

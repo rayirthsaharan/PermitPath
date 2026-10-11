@@ -7,9 +7,9 @@ export const UNLOCK_HOLD_MS = 5000;
 
 export type MotionLockState = {
   locked: boolean;
-  /** ms epoch when speed first dropped below the unlock speed (null if not currently slow). */
+  /** Time (ms) speed first dropped below the unlock speed; null if not slow. */
   slowSince: number | null;
-  /** Previous fix, used to derive speed when the reported speed is missing/negative. */
+  /** Previous fix, used to work out speed when the reported one is missing. */
   last: TrackPoint | null;
   /** Speed (m/s) used for the latest decision. */
   speed: number;
@@ -19,17 +19,15 @@ export function initialLockState(): MotionLockState {
   return { locked: false, slowSince: null, last: null, speed: 0 };
 }
 
-/** Reported speed when usable (non-null, finite, >= 0); otherwise derived from the previous fix (0 for the first fix). */
+/** Reported speed if usable (not null, finite, >= 0); else worked out from the previous fix (0 for the first). */
 export function effectiveSpeed(prev: TrackPoint | null, point: TrackPoint): number {
   if (point.speed !== null && Number.isFinite(point.speed) && point.speed >= 0) return point.speed;
   return prev ? derivedSpeed(prev, point) : 0;
 }
 
 /**
- * Pure reducer for a new GPS fix.
- * - Lock when speed >= 2.2 m/s.
- * - While locked, unlock only after speed stays < 0.9 m/s for >= 5 s.
- *   Speeds between 0.9 and 2.2 m/s keep the lock and reset the slow timer.
+ * Update the lock for a new GPS fix. Lock at 2.2 m/s or more.
+ * Unlock after speed stays under 0.9 m/s for 5 s. In between, stay locked and reset the timer.
  */
 export function nextLockState(state: MotionLockState, point: TrackPoint): MotionLockState {
   const speed = effectiveSpeed(state.last, point);
@@ -54,8 +52,8 @@ export function nextLockState(state: MotionLockState, point: TrackPoint): Motion
 }
 
 /**
- * Time-only update for when no new fix arrives (a stationary phone with a
- * distance filter stops reporting). Unlocks once the slow period has lasted 5 s.
+ * Time-only update for when no new fix arrives (a still phone stops reporting).
+ * Unlocks once the slow period reaches 5 s.
  */
 export function tickLockState(state: MotionLockState, nowMs: number): MotionLockState {
   if (state.locked && state.slowSince !== null && nowMs - state.slowSince >= UNLOCK_HOLD_MS) {
@@ -64,7 +62,7 @@ export function tickLockState(state: MotionLockState, nowMs: number): MotionLock
   return state;
 }
 
-/** Small stateful convenience wrapper around the reducer. */
+/** Small wrapper that keeps the state for you. */
 export function createMotionLock() {
   let state = initialLockState();
   return {

@@ -21,7 +21,7 @@ export type Progress = Totals & {
   nightHours: number;
   totalHoursRemaining: number;
   nightHoursRemaining: number;
-  /** 0-100, capped at 100 */
+  /** 0-100, never above 100 */
   totalPct: number;
   nightPct: number;
   totalComplete: boolean;
@@ -49,7 +49,7 @@ export function computeProgress(
   };
 }
 
-// ---- permit-holding calendar math (local calendar dates; DST-safe) ----
+// ---- permit-holding date math (local dates, safe across clock changes) ----
 
 function parseYmd(ymd: string): { y: number; m: number; d: number } | null {
   const mt = /^(\d{4})-(\d{2})-(\d{2})$/.exec(ymd);
@@ -57,7 +57,7 @@ function parseYmd(ymd: string): { y: number; m: number; d: number } | null {
   return { y: Number(mt[1]), m: Number(mt[2]), d: Number(mt[3]) };
 }
 
-/** Whole local calendar days between two local dates, via UTC day numbers. */
+/** Whole days between two local dates. */
 function dayNumber(y: number, m: number, d: number): number {
   return Math.round(Date.UTC(y, m - 1, d) / 86400000);
 }
@@ -67,7 +67,7 @@ function localDayNumber(ms: number): number {
   return dayNumber(dt.getFullYear(), dt.getMonth() + 1, dt.getDate());
 }
 
-/** Permit day number, 1-based: the issue date is day 1. Returns 0 if the date is invalid or in the future. */
+/** Permit day number: the issue date is day 1. 0 if the date is invalid or in the future. */
 export function permitDayNumber(permitIssueDate: string, nowMs: number): number {
   const p = parseYmd(permitIssueDate);
   if (!p) return 0;
@@ -75,7 +75,7 @@ export function permitDayNumber(permitIssueDate: string, nowMs: number): number 
   return Math.max(0, n);
 }
 
-/** Local date (YYYY-MM-DD) on which the permit has been held for `minDays` days. */
+/** Local date (YYYY-MM-DD) when the permit has been held `minDays` days. */
 export function eligibleDate(permitIssueDate: string, minDays = 180): string | null {
   const p = parseYmd(permitIssueDate);
   if (!p) return null;
@@ -84,7 +84,7 @@ export function eligibleDate(permitIssueDate: string, minDays = 180): string | n
   return `${dt.getUTCFullYear()}-${pad(dt.getUTCMonth() + 1)}-${pad(dt.getUTCDate())}`;
 }
 
-/** Calendar days from today until permitIssueDate + minDays (0 once reached). */
+/** Days from today until permitIssueDate + minDays (0 once reached). */
 export function daysUntilEligible(permitIssueDate: string, nowMs: number, minDays = 180): number {
   const p = parseYmd(permitIssueDate);
   if (!p) return minDays;
@@ -96,7 +96,7 @@ export function daysUntilEligible(permitIssueDate: string, nowMs: number, minDay
 
 export type WeekSummary = { driveCount: number; totalSec: number; nightSec: number };
 
-/** Start (local midnight, ms) of the Monday on/before nowMs. */
+/** Local midnight (ms) of the Monday on or before nowMs. */
 export function startOfWeek(nowMs: number): number {
   const d = new Date(nowMs);
   const daysSinceMonday = (d.getDay() + 6) % 7;

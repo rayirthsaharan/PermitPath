@@ -13,7 +13,7 @@ import {
 } from '../domain/curriculum';
 import type { Lesson } from '../domain/types';
 
-/** Progress toward 50/10 hours. `now` is recomputed when drives/profile change. */
+/** Progress toward 50/10 hours. Updates when drives or profile change. */
 export function useProgress(): Progress & { now: number } {
   const drives = useStore((s) => s.drives);
   const profile = useStore((s) => s.profile);
@@ -25,7 +25,7 @@ export function useProgress(): Progress & { now: number } {
       }),
       now: Date.now(),
     }),
-    // profile included so permit-date-dependent consumers refresh together
+    // profile is listed so anything using the permit date refreshes too
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [drives, profile],
   );
@@ -49,7 +49,7 @@ export function useCurriculumContext(): CurriculumContext {
   }, [drives, ratings, overriddenStageIds]);
 }
 
-/** Map of stage id -> status (unlocked / overridden / unmet reasons). */
+/** Status of each stage by id (unlocked, overridden, or what is missing). */
 export function useStageStatuses(): Map<number, StageStatus> {
   const ctx = useCurriculumContext();
   return useMemo(() => allStageStatuses(ctx), [ctx]);

@@ -51,8 +51,8 @@ async function fetchMapbox(token: string, stops: LatLng[]): Promise<LatLng[] | n
 }
 
 /**
- * Overview route for a lesson. Never returns turn-by-turn instructions.
- * Mapbox (if EXPO_PUBLIC_MAPBOX_TOKEN is set) -> straight polyline fallback -> none.
+ * Overview route for a lesson. Never gives turn-by-turn steps.
+ * Tries Mapbox (if EXPO_PUBLIC_MAPBOX_TOKEN is set), then a straight line, then none.
  */
 export async function getLessonRoute(lesson: Lesson, origin?: LatLng): Promise<LessonRoute> {
   const waypoints = lessonWaypoints(lesson);

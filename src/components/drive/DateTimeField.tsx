@@ -5,7 +5,7 @@ import { useTheme } from '../../theme/ThemeProvider';
 import { formatLocalDate, formatLocalTime } from '../../domain/logHtml';
 import { FieldLabel } from './Field';
 
-// The native picker must never be evaluated on web.
+// Never load the native picker on web.
 /* eslint-disable @typescript-eslint/no-explicit-any */
 let NativePicker: any = null;
 let NativePickerAndroid: any = null;
@@ -23,7 +23,7 @@ export function toYmd(d: Date): string {
   return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
 }
 
-/** Parse 'YYYY-MM-DD' into a local-midnight Date, or null if malformed / not a real date. */
+/** Turn 'YYYY-MM-DD' into a date at local midnight, or null if invalid. */
 export function parseYmdLocal(s: string): Date | null {
   const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(s.trim());
   if (!m) return null;
@@ -35,7 +35,7 @@ export function parseYmdLocal(s: string): Date | null {
   return dt;
 }
 
-/** Parse 24h 'HH:MM' (also accepts 'H:MM'); returns a Date today at that time, or null. */
+/** Turn 24h 'HH:MM' (or 'H:MM') into a Date for today, or null. */
 export function parseHm(s: string): Date | null {
   const m = /^(\d{1,2}):(\d{2})$/.exec(s.trim());
   if (!m) return null;
@@ -46,7 +46,7 @@ export function parseHm(s: string): Date | null {
   return new Date(now.getFullYear(), now.getMonth(), now.getDate(), h, mi, 0, 0);
 }
 
-/** Combine a calendar day with the clock time of another Date. */
+/** Join one day with the clock time of another Date. */
 export function combineDayAndTime(day: Date, time: Date): Date {
   return new Date(day.getFullYear(), day.getMonth(), day.getDate(), time.getHours(), time.getMinutes(), 0, 0);
 }
@@ -62,8 +62,8 @@ export type DateTimeFieldProps = {
 };
 
 /**
- * Date / time input. Native: a tappable field that opens the platform picker.
- * Web: a plain text input (YYYY-MM-DD or HH:MM, 24-hour).
+ * Date / time input. Native: a field that opens the system picker.
+ * Web: a plain text box (YYYY-MM-DD or HH:MM, 24-hour).
  */
 export function DateTimeField({ label, mode, value, onChange, maximumDate, error, hint }: DateTimeFieldProps) {
   const { colors, spacing, radius, typography, isDark } = useTheme();

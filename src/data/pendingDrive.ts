@@ -1,6 +1,6 @@
 import type { Drive, TrackPoint } from '../domain/types';
 
-/** An unsaved, just-finished drive awaiting the summary screen (route: /drive/summary/pending). */
+/** A just-finished drive, not yet saved; waits for the summary screen. */
 export type PendingDrive = { drive: Drive; track: TrackPoint[] };
 
 let pending: PendingDrive | null = null;

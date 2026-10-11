@@ -1,19 +1,15 @@
 import { isNightAt } from './solar';
 import type { NightRule, TrackPoint } from './types';
 
-/** Any single interval between fixes is capped at this many seconds (GPS gaps must not inflate time). */
+/** Each gap between fixes counts at most this many seconds, so GPS gaps do not inflate time. */
 export const MAX_INTERVAL_SEC = 120;
 
 export type DayNightSplit = { totalSec: number; nightSec: number };
 
 /**
- * Walk the track and classify each interval between consecutive fixes as day
- * or night using the interval's midpoint time and midpoint location.
- *
- * Behavior for gaps: an interval longer than MAX_INTERVAL_SEC (120 s) is still
- * classified by its midpoint, but only 120 s of it is counted. Gaps therefore
- * never inflate logged time; the lost time is simply not counted. Intervals
- * with non-positive duration are ignored. Tracks with < 2 points return zeros.
+ * Walk the track and call each gap between fixes day or night, using its midpoint time and place.
+ * A gap over MAX_INTERVAL_SEC (120 s) is still judged by its midpoint, but only 120 s counts.
+ * Zero or negative gaps are ignored. Tracks with fewer than 2 points return zeros.
  */
 export function splitDayNight(
   track: ReadonlyArray<TrackPoint>,

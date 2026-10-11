@@ -12,8 +12,8 @@ const KIND: Record<CoachingCardKind, { icon: React.ComponentProps<typeof Ionicon
 };
 
 /**
- * Swipeable coaching-card peek for the always-dark drive screen.
- * Uses the dark palette directly so it stays dark in light mode.
+ * Swipeable coaching cards for the always-dark drive screen.
+ * Uses dark colors directly so it stays dark in light mode.
  */
 export function DriveCoachPeek({ cards, width }: { cards: CoachingCard[]; width: number }) {
   const c = darkColors;

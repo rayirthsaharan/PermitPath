@@ -141,7 +141,7 @@ export default function Onboarding() {
       const toSave = sups.length > 0 ? sups : [];
       for (const s of toSave) await addSupervisor(s);
       await updateSettings({ pledgeAcceptedAt: Date.now() });
-      // Profile last: it is what the root layout uses to decide onboarding is complete.
+      // Save the profile last: the root layout uses it to know onboarding is done.
       await saveProfile({
         firstName: firstName.trim(),
         permitIssueDate: toYmd(permitDate),
@@ -150,7 +150,7 @@ export default function Onboarding() {
       try {
         await Location.requestForegroundPermissionsAsync();
       } catch {
-        /* never block on location */
+        /* don't block on location */
       }
       setDone(true);
     } catch {

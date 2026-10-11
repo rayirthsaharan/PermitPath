@@ -1,6 +1,6 @@
 import type { TrackPoint } from './types';
 
-// Local equirectangular projection (meters) around a reference latitude.
+// Flat-map projection (meters) around a reference latitude.
 function project(p: TrackPoint, lat0: number): { x: number; y: number } {
   const R = 6371008.8;
   const k = Math.PI / 180;
@@ -22,8 +22,8 @@ function perpendicularDistance(
 }
 
 /**
- * Douglas-Peucker simplification with a tolerance in meters. The first and last
- * points are always kept. Iterative (no recursion) so long tracks are safe.
+ * Douglas-Peucker line simplifying, tolerance in meters. Always keeps the first and last points.
+ * Uses a loop, not recursion, so long tracks are safe.
  */
 export function simplifyTrack(track: ReadonlyArray<TrackPoint>, toleranceM = 5): TrackPoint[] {
   const n = track.length;

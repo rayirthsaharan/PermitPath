@@ -5,7 +5,7 @@ import { SKILLS, SKILL_CATEGORIES } from '../content/skills';
 import { buildLogHtml } from '../domain/logHtml';
 import { useStore } from '../data/store';
 
-/** Build the printable log HTML from current store state (null when there is no profile). */
+/** Build the printable log HTML from the store (null if there is no profile). */
 export function buildCurrentLogHtml(): string | null {
   const s = useStore.getState();
   if (!s.profile) return null;
@@ -20,7 +20,7 @@ export function buildCurrentLogHtml(): string | null {
   });
 }
 
-/** Native: render a PDF and open the share sheet. Web: browser print dialog. */
+/** Native: make a PDF and open the share sheet. Web: open the print dialog. */
 export async function exportLogPdf(): Promise<void> {
   const html = buildCurrentLogHtml();
   if (!html) throw new Error('Set up a profile before exporting the log.');

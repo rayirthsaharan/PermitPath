@@ -13,7 +13,7 @@ export const BRAKE_CONFIG = {
   minSpeedDropMs: 2.5,
   windowMs: 2000,
   debounceMs: 6000,
-  /** A motion gap longer than this breaks an "over threshold" run. */
+  /** A motion gap longer than this ends a spike. */
   maxMotionGapMs: 500,
   /** Keep this much GPS history. */
   historyMs: 30000,
@@ -33,13 +33,9 @@ export type BrakeDetector = {
 };
 
 /**
- * Hard-brake detector.
- *  1. Orientation-agnostic: magnitude of linear acceleration, EMA-smoothed (alpha 0.3).
- *  2. A candidate forms when the smoothed magnitude stays >= threshold for >= 300 ms.
- *  3. The candidate stays pending until 2 s after the spike, then GPS corroboration
- *     is evaluated in the +/- 2 s window: speed before >= 4.5 m/s AND a drop of
- *     >= 2.5 m/s. This rejects phone fumbles and low-speed bumps.
- *  4. Confirmed events closer than 6 s to the previous event are dropped (debounce).
+ * Hard-brake detector. Watches how hard the phone shakes (smoothed, any orientation).
+ * A spike must last 300 ms, then GPS must show a real speed drop within 2 s.
+ * This ignores fumbles and low-speed bumps. Events within 6 s of the last one are dropped.
  */
 export function createBrakeDetector(sensitivity: BrakeSensitivity): BrakeDetector {
   const threshold = BRAKE_THRESHOLDS[sensitivity];
@@ -48,7 +44,7 @@ export function createBrakeDetector(sensitivity: BrakeSensitivity): BrakeDetecto
   let ema: number | null = null;
   let lastMotionT: number | null = null;
   let overStart: number | null = null;
-  let current: Candidate | null = null; // exceedance run that already produced a candidate
+  let current: Candidate | null = null; // spike that already became a candidate
   const pending: Candidate[] = [];
   const history: Fix[] = [];
   const events: HardBrakeEvent[] = [];
@@ -60,7 +56,7 @@ export function createBrakeDetector(sensitivity: BrakeSensitivity): BrakeDetecto
     if (!prevFix) return 0;
     const dt = (p.t - prevFix.t) / 1000;
     if (dt <= 0) return 0;
-    // Equirectangular approximation is plenty at these scales.
+    // Flat-map math is accurate enough for short distances.
     const k = Math.PI / 180;
     const dy = (p.lat - prevFix.lat) * k * 6371008.8;
     const dx = (p.lng - prevFix.lng) * k * 6371008.8 * Math.cos(p.lat * k);
@@ -71,7 +67,7 @@ export function createBrakeDetector(sensitivity: BrakeSensitivity): BrakeDetecto
     const lo = c.peakT - cfg.windowMs;
     const hi = c.peakT + cfg.windowMs;
     let inWindow = history.filter((f) => f.t >= lo && f.t <= hi);
-    // Sparse GPS: also consider the last fix just before the window.
+    // GPS may be sparse, so also use the last fix before the window.
     const before = [...history].reverse().find((f) => f.t < lo && lo - f.t <= 4000);
     if (before) inWindow = [before, ...inWindow];
     if (inWindow.length < 2) return null;
@@ -86,7 +82,7 @@ export function createBrakeDetector(sensitivity: BrakeSensitivity): BrakeDetecto
       }
     }
     if (!ok) return null;
-    // Location: fix nearest in time to the peak.
+    // Location: the fix closest in time to the peak.
     let best = inWindow[0];
     for (const f of inWindow) if (Math.abs(f.t - c.peakT) < Math.abs(best.t - c.peakT)) best = f;
     return best;
@@ -94,10 +90,10 @@ export function createBrakeDetector(sensitivity: BrakeSensitivity): BrakeDetecto
 
   function resolve(force: boolean): HardBrakeEvent[] {
     const out: HardBrakeEvent[] = [];
-    // Candidates are appended in time order.
+    // Candidates are added in time order.
     while (pending.length) {
       const c = pending[0];
-      // A candidate whose run is still over threshold keeps accumulating its peak.
+      // A spike that is still going keeps updating its peak.
       if (c.open && !force) break;
       if (!force && latestT < c.t + cfg.windowMs) break;
       pending.shift();

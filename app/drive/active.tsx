@@ -41,7 +41,7 @@ function NightBadge() {
   );
 }
 
-/** Always dark, regardless of the app theme (principle 5). */
+/** Always dark, whatever the app theme is. */
 export default function ActiveDrive() {
   const c = darkColors;
   const router = useRouter();
@@ -53,7 +53,7 @@ export default function ActiveDrive() {
   const lesson = rec.lessonId ? getLesson(rec.lessonId) : undefined;
   const locked = rec.locked;
 
-  // Deep link / app restart with nothing recording: go home.
+  // Nothing is recording (e.g. app restarted): go home.
   useEffect(() => {
     if (rec.status === 'idle' && !endingRef.current) router.replace('/');
   }, [rec.status, router]);

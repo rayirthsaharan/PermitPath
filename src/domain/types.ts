@@ -80,8 +80,8 @@ export type Settings = {
 
 export type CurfewWindow = { startHour: number; endHour: number };
 
-// ---- Content shapes (data lives in src/content, shapes live here so the
-// ---- domain layer never imports from content). ----
+// ---- Content shapes: data lives in src/content, but the shapes live here so
+// ---- the domain layer never imports from content. ----
 
 export type Skill = {
   id: string;

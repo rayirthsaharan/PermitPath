@@ -61,7 +61,7 @@ function equationOfTime(t: number): number {
   return 4 * deg(E);
 }
 
-/** Event time in minutes from 0h UTC of the date (may be <0 or >1440). null if the sun does not cross the horizon. */
+/** Event time in minutes after 0:00 UTC that day (can be below 0 or above 1440). null if the sun never crosses the horizon. */
 function eventMinutesUTC(rise: boolean, jd: number, lat: number, lng: number): number | null {
   const t = julianCentury(jd);
   const eq = equationOfTime(t);
@@ -84,8 +84,8 @@ export type SunTimes = {
 };
 
 /**
- * Sunrise/sunset for a calendar date (year, month 1-12, day) at lat/lng.
- * Result times are absolute UTC ms. Polar edge cases return nulls plus `polar`.
+ * Sunrise/sunset for a date (year, month 1-12, day) at lat/lng, as UTC ms.
+ * Near the poles it returns nulls plus `polar`.
  */
 export function sunTimes(year: number, month: number, day: number, lat: number, lng: number): SunTimes {
   const jd0 = julianDay(year, month, day);
@@ -93,7 +93,7 @@ export function sunTimes(year: number, month: number, day: number, lat: number, 
   const calc = (rise: boolean): number | null => {
     const first = eventMinutesUTC(rise, jd0, lat, lng);
     if (first === null) return null;
-    // Second pass using the estimated event time for a better solar position.
+    // Second pass using the first estimate for a better result.
     const second = eventMinutesUTC(rise, jd0 + first / 1440, lat, lng);
     return second === null ? null : dayStart + second * MS_PER_MIN;
   };
@@ -105,16 +105,16 @@ export function sunTimes(year: number, month: number, day: number, lat: number, 
   return { sunrise: null, sunset: null, polar: noonElevation > -0.833 ? 'day' : 'night' };
 }
 
-/** Calendar date (UTC fields) of the local mean solar day containing t at this longitude. */
+/** Calendar date (UTC fields) of the local solar day that contains t. */
 function solarDay(tMs: number, lng: number): { y: number; m: number; d: number } {
   const shifted = new Date(tMs + (lng / 15) * 3600000);
   return { y: shifted.getUTCFullYear(), m: shifted.getUTCMonth() + 1, d: shifted.getUTCDate() };
 }
 
 /**
- * Is the instant `tMs` at (lat, lng) night?
- * - 'sun': before sunrise or after sunset of that local solar day (polar day = never night, polar night = always).
- * - 'fixed': device-local hour >= 18 or < 6 (uses Date#getHours; `fixed` bounds default to 18/6).
+ * Is the moment `tMs` at (lat, lng) night?
+ * - 'sun': before sunrise or after sunset of that local solar day (polar day: never night, polar night: always).
+ * - 'fixed': local hour >= 18 or < 6 (the `fixed` hours default to 18/6).
  */
 export function isNightAt(
   tMs: number,

@@ -55,7 +55,7 @@ const IDLE_STATE: RecorderState = {
   weather: 'clear',
 };
 
-/** Pure-ish builder shared by stop() and finalizeRecovered(). */
+/** Builds a drive; shared by stop() and finalizeRecovered(). */
 function buildDrive(args: {
   startedAt: number;
   endedAt: number;
@@ -114,7 +114,7 @@ class DriveRecorder {
   private tickTimer: ReturnType<typeof setInterval> | null = null;
   private snapshotTimer: ReturnType<typeof setInterval> | null = null;
 
-  // ---- external store plumbing ----
+  // ---- store hookup ----
   subscribe = (fn: () => void): (() => void) => {
     this.listeners.add(fn);
     return () => {
@@ -330,7 +330,7 @@ class DriveRecorder {
     return storage.getItem('activeDrive');
   }
 
-  /** Build an unsaved Drive from a recovered snapshot and clear the snapshot. */
+  /** Make an unsaved Drive from a recovered snapshot, then clear the snapshot. */
   async finalizeRecovered(snapshot: ActiveDriveSnapshot): Promise<FinishedDrive> {
     const lastT = snapshot.track.length ? snapshot.track[snapshot.track.length - 1].t : snapshot.savedAt;
     const endedAt = Math.max(snapshot.startedAt, Math.min(lastT, snapshot.savedAt));

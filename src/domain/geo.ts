@@ -40,9 +40,9 @@ export type MapRegion = {
 };
 
 /**
- * Map region (center + deltas) that fits all points with padding.
- * `padding` is a fraction of the span added on each side (default 0.2). A minimum
- * delta keeps single-point or tiny tracks from zooming in absurdly far.
+ * Map region (center + size) that fits all points with padding.
+ * `padding` is a fraction of the span added on each side (default 0.2).
+ * A minimum size stops one-point or tiny tracks from zooming in too far.
  */
 export function regionForPoints(
   points: ReadonlyArray<LatLng>,
@@ -61,12 +61,12 @@ export function regionForPoints(
   };
 }
 
-/** Total distance along a GPS track in meters. */
+/** Total length of a GPS track in meters. */
 export function trackPointsDistance(track: ReadonlyArray<TrackPoint>): number {
   return trackDistance(track);
 }
 
-/** Speed in m/s between two fixes, derived from distance / time. Returns 0 if dt <= 0. */
+/** Speed in m/s between two fixes (distance / time). 0 if dt <= 0. */
 export function derivedSpeed(a: TrackPoint, b: TrackPoint): number {
   const dt = (b.t - a.t) / 1000;
   if (dt <= 0) return 0;

@@ -3,8 +3,8 @@ import { StyleSheet, View } from 'react-native';
 import { useTheme } from '../theme/ThemeProvider';
 
 /**
- * Full-screen near-black overlay that swallows every touch.
- * Render content (timer, message) as children; nothing inside is interactive.
+ * Full-screen near-black overlay that blocks every touch.
+ * Put the timer or message inside as children; nothing in it is tappable.
  */
 export function LockOverlay({ children }: { children?: React.ReactNode }) {
   const { colors } = useTheme();

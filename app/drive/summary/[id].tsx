@@ -29,7 +29,7 @@ const GENERIC_PROMPTS = [
 export default function DriveSummary() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const isPending = id === 'pending';
-  // Capture once: the module-level slot is cleared on save / discard.
+  // Read it once; the stored copy is cleared on save or discard.
   const [pending] = useState(() => (isPending ? getPendingDrive() : null));
   const saved = useStore((s) => (isPending ? undefined : s.drives.find((d) => d.id === id)));
   const drive: Drive | undefined = pending?.drive ?? saved;
@@ -59,7 +59,7 @@ function MissingDrive() {
   );
 }
 
-// ---------- shared presentational pieces ----------
+// ---------- shared pieces ----------
 
 function DriveStats({ drive }: { drive: Drive }) {
   const { spacing } = useTheme();
@@ -275,7 +275,7 @@ function PendingSummary({ drive, track }: { drive: Drive; track: TrackPoint[] })
   );
 }
 
-// ---------- saved (read-only-ish) ----------
+// ---------- saved (view only) ----------
 
 function SavedSummary({ drive }: { drive: Drive }) {
   const { colors, spacing, typography } = useTheme();

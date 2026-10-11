@@ -62,7 +62,7 @@ export function WeatherPicker({ value, onChange }: { value: Weather; onChange: (
   );
 }
 
-/** Lesson chooser: collapsed summary card that expands to a list grouped by stage. `null` = free drive. */
+/** Lesson chooser: a summary card that opens to a list grouped by stage. `null` = free drive. */
 export function LessonPicker({
   value,
   onChange,
@@ -146,7 +146,7 @@ export function LessonPicker({
   );
 }
 
-/** Skills practiced chips: lesson skills first, everything else under "More skills" grouped by category. */
+/** Skill chips: lesson skills first, the rest under "More skills" by category. */
 export function SkillPicker({
   lessonSkillIds,
   selected,
@@ -160,7 +160,7 @@ export function SkillPicker({
   const [more, setMore] = useState(false);
   const lessonSet = useMemo(() => new Set(lessonSkillIds), [lessonSkillIds]);
   const sel = new Set(selected);
-  // Lesson skills first; anything else the parent picked stays visible beside them.
+  // Lesson skills first; other skills the parent picked stay visible too.
   const lessonSkills = SKILLS.filter((s) => lessonSet.has(s.id) || sel.has(s.id));
   const topSet = new Set(lessonSkills.map((s) => s.id));
   const chip = (id: string, title: string) => (

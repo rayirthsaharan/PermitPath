@@ -9,7 +9,7 @@ export type { RouteMapProps, MapPin } from './RouteMap.types';
 const W = 300;
 const PAD = 16;
 
-/** Web preview: normalizes the route into an SVG panel (no tiles). */
+/** Web preview: draws the route as a simple SVG (no map tiles). */
 export function RouteMap({ route = [], pins = [], height = 220, caption }: RouteMapProps) {
   const { colors, radius, typography } = useTheme();
   const H = (height / 220) * 200;

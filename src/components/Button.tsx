@@ -16,7 +16,7 @@ export type ButtonProps = {
   loading?: boolean;
   disabled?: boolean;
   fullWidth?: boolean;
-  /** When set, onPress fires only after the button is held this long; a fill shows progress. */
+  /** Hold this long before onPress fires; a fill shows progress. */
   holdToConfirmMs?: number;
   accessibilityLabel?: string;
   style?: StyleProp<ViewStyle>;

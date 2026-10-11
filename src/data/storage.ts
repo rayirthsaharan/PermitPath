@@ -12,7 +12,7 @@ import type {
   HardBrakeEvent,
 } from '../domain/types';
 
-/** Snapshot persisted during recording for crash recovery. */
+/** Saved while recording so a crash can be recovered. */
 export type ActiveDriveSnapshot = {
   startedAt: number;
   savedAt: number;
