@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Platform, Pressable, Text, TextInput, View } from 'react-native';
+import { Modal, Platform, Pressable, Text, TextInput, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useTheme } from '../../theme/ThemeProvider';
 import { formatLocalDate, formatLocalTime } from '../../domain/logHtml';
@@ -68,6 +68,8 @@ export type DateTimeFieldProps = {
 export function DateTimeField({ label, mode, value, onChange, maximumDate, error, hint }: DateTimeFieldProps) {
   const { colors, spacing, radius, typography, isDark } = useTheme();
   const [open, setOpen] = useState(false);
+  // Starting value for an empty field, so tapping Done without spinning still sets a time.
+  const [draft, setDraft] = useState(() => new Date());
   const [text, setText] = useState(() => (value ? (mode === 'date' ? toYmd(value) : `${pad(value.getHours())}:${pad(value.getMinutes())}`) : ''));
 
   const boxStyle = {
@@ -110,7 +112,8 @@ export function DateTimeField({ label, mode, value, onChange, maximumDate, error
           },
         });
       } else {
-        setOpen((o) => !o);
+        setDraft(current);
+        setOpen(true);
       }
     };
     control = (
@@ -126,17 +129,59 @@ export function DateTimeField({ label, mode, value, onChange, maximumDate, error
           </Text>
           <Ionicons name={mode === 'date' ? 'calendar-outline' : 'time-outline'} size={20} color={colors.textMuted} />
         </Pressable>
-        {Platform.OS === 'ios' && open ? (
-          <NativePicker
-            value={value ?? new Date()}
-            mode={mode}
-            display="spinner"
-            maximumDate={maximumDate}
-            themeVariant={isDark ? 'dark' : 'light'}
-            onChange={(_e: unknown, d?: Date) => {
-              if (d) onChange(d);
-            }}
-          />
+        {Platform.OS === 'ios' ? (
+          // Full-width bottom sheet so the wheel never gets squeezed by a narrow column.
+          <Modal visible={open} transparent animationType="slide" onRequestClose={() => setOpen(false)}>
+            <Pressable
+              accessibilityLabel="Close picker"
+              onPress={() => setOpen(false)}
+              style={{ flex: 1, backgroundColor: 'rgba(0,0,0,0.4)' }}
+            />
+            <View
+              style={{
+                backgroundColor: colors.surface,
+                borderTopLeftRadius: radius.card,
+                borderTopRightRadius: radius.card,
+                paddingBottom: spacing.xxl,
+              }}
+            >
+              <View
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  paddingHorizontal: spacing.lg,
+                  paddingVertical: spacing.md,
+                  borderBottomWidth: 1,
+                  borderBottomColor: colors.border,
+                }}
+              >
+                <Text style={[typography.headline, { color: colors.text }]}>{label}</Text>
+                <Pressable
+                  accessibilityRole="button"
+                  accessibilityLabel="Done"
+                  onPress={() => {
+                    if (!value) onChange(draft);
+                    setOpen(false);
+                  }}
+                  hitSlop={12}
+                >
+                  <Text style={[typography.headline, { color: colors.primary }]}>Done</Text>
+                </Pressable>
+              </View>
+              <NativePicker
+                value={value ?? draft}
+                mode={mode}
+                display="spinner"
+                maximumDate={maximumDate}
+                themeVariant={isDark ? 'dark' : 'light'}
+                style={{ alignSelf: 'stretch' }}
+                onChange={(_e: unknown, d?: Date) => {
+                  if (d) onChange(d);
+                }}
+              />
+            </View>
+          </Modal>
         ) : null}
       </View>
     );

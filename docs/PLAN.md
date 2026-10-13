@@ -79,13 +79,13 @@ Tennessee Driver Handbook / TN Dept. of Safety for official requirements."*
   (defaults to "next suggested"), weather (clear / rain / fog / snow-ice),
   pre-drive **briefing** = the lesson's coaching cards. Big "Start drive" button.
 - **Recording** (`src/services/recorder.ts`):
-  - `expo-location` `watchPositionAsync` (BestForNavigation, 2 s / 10 m).
+  - `expo-location` `watchPositionAsync` (BestForNavigation, every 1 s, no distance filter so a parked phone keeps reporting).
   - `expo-sensors` `DeviceMotion` at 20 Hz for hard-brake detection.
   - `expo-keep-awake` keeps the screen on (screen is near-black to save power).
   - Track samples `{t, lat, lng, speed}` buffered in memory and flushed to
     storage every 30 s (crash-safe: an unfinished drive is recoverable on next launch).
 - **Movement lock** (`src/domain/motionLock.ts`): locked when speed ≥ 2.2 m/s
-  (≈5 mph); unlocks only after speed < 0.9 m/s for ≥ 5 s. When GPS speed is
+  (≈5 mph); unlocks after speed < 0.9 m/s for ≥ 5 s, or after 6 s with no GPS fix once below ~13 mph (moves under 4 m are treated as GPS drift). When GPS speed is
   missing/negative, derive from consecutive fixes. While locked the screen shows
   only elapsed time, a NIGHT badge, and "Eyes on the road — app locked while
   moving." **No buttons are tappable while locked.**

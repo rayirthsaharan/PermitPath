@@ -60,6 +60,30 @@ describe('motionLock', () => {
     expect(tickLockState(s, 7000).locked).toBe(false);
   });
 
+  it('unlocks within 10 s when the phone stops sending fixes after slowing down', () => {
+    // Real-drive bug: last fix while braking at 3 m/s, then the phone goes quiet.
+    let s = nextLockState(initialLockState(), p(0, 12));
+    s = nextLockState(s, p(2, 3));
+    expect(tickLockState(s, 7000).locked).toBe(true); // 5 s of silence
+    expect(tickLockState(s, 8000).locked).toBe(false); // 6 s of silence
+  });
+
+  it('does not unlock on GPS silence at speed (e.g. a tunnel)', () => {
+    let s = nextLockState(initialLockState(), p(0, 25));
+    s = nextLockState(s, p(1, 25));
+    expect(tickLockState(s, 30000).locked).toBe(true);
+  });
+
+  it('treats small GPS drift as stopped when speed is unknown', () => {
+    let s = nextLockState(initialLockState(), p(0, 10));
+    // 2 m wobble per second with no reported speed
+    s = nextLockState(s, p(1, null, 36.20002, -86.5));
+    s = nextLockState(s, p(2, -1, 36.2, -86.5));
+    expect(s.speed).toBe(0);
+    s = nextLockState(s, p(6, null, 36.20002, -86.5));
+    expect(s.locked).toBe(false); // slow for 5 s
+  });
+
   it('createMotionLock wrapper works', () => {
     const lock = createMotionLock();
     expect(lock.push(p(0, 8))).toBe(true);

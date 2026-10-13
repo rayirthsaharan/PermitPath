@@ -156,7 +156,7 @@ class DriveRecorder {
       activateKeepAwakeAsync(KEEP_AWAKE_TAG).catch(() => {});
 
       this.locationSub = await Location.watchPositionAsync(
-        { accuracy: Location.Accuracy.BestForNavigation, timeInterval: 2000, distanceInterval: 10 },
+        { accuracy: Location.Accuracy.BestForNavigation, timeInterval: 1000, distanceInterval: 0 },
         (loc) => this.onFix(loc),
       );
       await this.startMotion();
